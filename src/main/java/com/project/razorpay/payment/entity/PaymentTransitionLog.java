@@ -11,10 +11,6 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "payment_transition_log")
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class PaymentTransitionLog {
 
     @Id
