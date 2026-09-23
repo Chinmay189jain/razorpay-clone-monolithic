@@ -7,6 +7,7 @@ import com.project.razorpay.merchant.dto.response.ApiKeyCreateResponse;
 import com.project.razorpay.merchant.dto.response.ApiKeyResponse;
 import com.project.razorpay.merchant.entity.ApiKey;
 import com.project.razorpay.merchant.entity.Merchant;
+import com.project.razorpay.merchant.mapper.ApiKeyMapper;
 import com.project.razorpay.merchant.repository.ApiKeyRepository;
 import com.project.razorpay.merchant.repository.MerchantRepository;
 import com.project.razorpay.merchant.service.ApiKeyService;
@@ -27,6 +28,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 
     private final MerchantRepository merchantRepository;
     private final ApiKeyRepository apiKeyRepository;
+    private final ApiKeyMapper apiKeyMapper;
 
     @Override
     @Transactional
@@ -52,17 +54,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 
     @Override
     public List<ApiKeyResponse> listByMerchant(UUID merchantId) {
-        return apiKeyRepository.findByMerchant_Id(merchantId).stream()
-                .map(apiKey ->
-                        new ApiKeyResponse(
-                                apiKey.getId(),
-                                apiKey.getKeyId(),
-                                apiKey.getEnvironment(),
-                                apiKey.isEnabled(),
-                                apiKey.getLastUsedAt(),
-                                null
-                        ))
-                .toList();
+        return apiKeyMapper.toResponseList(apiKeyRepository.findByMerchant_Id(merchantId));
     }
 
     @Override
@@ -78,19 +70,24 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     @Override
     @Transactional
     public @Nullable ApiKeyCreateResponse rotate(UUID merchantId, UUID keyId) {
-        ApiKey key = apiKeyRepository.findById(keyId)
-                .filter(apiKey -> apiKey.getMerchant().getId().equals(merchantId))
+        ApiKey apiKey = apiKeyRepository.findById(keyId)
+                .filter(key -> key.getMerchant().getId().equals(merchantId))
                 .orElseThrow(() -> new ResourceNotFoundException("apiKey", keyId));
 
-        if(!key.isEnabled()) throw new RuntimeException("Cannot rotate a disabled key");
+        if(!apiKey.isEnabled()) throw new RuntimeException("Cannot rotate a disabled key");
 
         String newRawSecret = RandomizerUtil.randomBase64(40);
-        key.setPreviousKeySecretHash(key.getKeySecretHash());
-        key.setKeySecretHash(newRawSecret); // TODO: Encrypt the secret key
-        key.setRotatedAt(LocalDateTime.now());
-        key.setGracePeriodExpiresAt(LocalDateTime.now().plusHours(24));
-        key = apiKeyRepository.save(key);
+        apiKey.setPreviousKeySecretHash(apiKey.getKeySecretHash());
+        apiKey.setKeySecretHash(newRawSecret); // TODO: Encrypt the secret key
+        apiKey.setRotatedAt(LocalDateTime.now());
+        apiKey.setGracePeriodExpiresAt(LocalDateTime.now().plusHours(24));
+        apiKey = apiKeyRepository.save(apiKey);
 
-        return new ApiKeyCreateResponse(key.getId(), key.getKeyId(), newRawSecret, key.getEnvironment());
+        return new ApiKeyCreateResponse(
+                apiKey.getId(),
+                apiKey.getKeyId(),
+                newRawSecret,
+                apiKey.getEnvironment()
+        );
     }
 }
