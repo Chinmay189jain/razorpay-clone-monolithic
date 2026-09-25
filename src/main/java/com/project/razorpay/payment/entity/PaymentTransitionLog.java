@@ -14,6 +14,11 @@ import java.util.UUID;
 @Table(name = "payment_transition_log", indexes = {
         @Index(name = "idx_payment_transition_log_payment_id", columnList = "payment_id")
 })
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class PaymentTransitionLog extends BaseEntity {
 
     @Id
