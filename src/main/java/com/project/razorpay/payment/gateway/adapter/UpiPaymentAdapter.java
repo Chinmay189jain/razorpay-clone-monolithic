@@ -1,0 +1,17 @@
+package com.project.razorpay.payment.gateway.adapter;
+
+import com.project.razorpay.payment.gateway.PaymentAdapter;
+import com.project.razorpay.payment.gateway.dto.PaymentRequest;
+import com.project.razorpay.payment.gateway.dto.PaymentResult;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+@Component
+@RequiredArgsConstructor
+public class UpiPaymentAdapter implements PaymentAdapter {
+
+    @Override
+    public PaymentResult initiate(PaymentRequest request) {
+        return null;
+    }
+}

@@ -14,11 +14,11 @@ import com.project.razorpay.payment.mapper.PaymentMapper;
 import com.project.razorpay.payment.repository.OrderRepository;
 import com.project.razorpay.payment.repository.PaymentRepository;
 import com.project.razorpay.payment.service.OrderService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
