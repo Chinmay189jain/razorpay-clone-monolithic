@@ -1,0 +1,81 @@
+                    PAYMENT INITIATE
+                           |
+                           v
+              PaymentService creates Payment
+                    status = CREATED
+                           |
+                           v
+                  PaymentGatewayRouter
+                           |
+          -------------------------------------
+          |                 |                 |
+          v                 v                 v
+        CARD              UPI            NETBANKING
+          |                 |                 |
+          v                 v                 v
+   Card Adapter       UPI Adapter     NetBanking Adapter
+          |                 |                 |
+          v                 v                 v
+   Vault using token   Build request   Build request
+   decrypts PAN
+          |                 |                 |
+          ------------------|------------------
+                           |
+                           v
+                  PaymentProcessor
+                           |
+              -------------------------
+              |                       |
+              v                       v
+          PENDING                  FAILURE
+              |                       |
+              v                       v
+   AUTHORIZE_ATTEMPT        AUTHORIZE_ATTEMPT
+              |                       |
+              v                       v
+        AUTHORIZING             AUTHORIZE_FAIL
+              |                       |
+              v                       v
+   Scheduler / Bank Callback      FAILED
+              |
+      ------------------
+      |                |
+      v                v
+   APPROVED          DECLINED
+      |                |
+      v                v
+AUTHORIZE_SUCCESS  AUTHORIZE_FAIL
+      |                |
+      v                v
+  AUTHORIZED         FAILED
+      |
+      v
+ CAPTURE_REQUEST
+      |
+      v
+  CAPTURING
+      |
+      v
+CAPTURE_SUCCESS
+      |
+      v
+  CAPTURED
+      |
+      v
+ ORDER PAID
+
+
+Short status flow:
+
+CREATED
+  -> AUTHORIZING
+  -> AUTHORIZED
+  -> CAPTURING
+  -> CAPTURED
+
+
+Failure paths:
+
+CREATED -> AUTHORIZING -> FAILED
+
+AUTHORIZING -> FAILED

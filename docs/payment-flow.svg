@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="900" viewBox="0 0 1100 900">
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#1f2937"/>
+    </marker>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 700 30px Arial, sans-serif; fill: #111827; }
+      .box { fill: #ffffff; stroke: #334155; stroke-width: 2; rx: 10; }
+      .api { fill: #e0f2fe; stroke: #0369a1; }
+      .adapter { fill: #ede9fe; stroke: #6d28d9; }
+      .processor { fill: #ecfdf5; stroke: #047857; }
+      .event { fill: #fef9c3; stroke: #a16207; }
+      .success { fill: #dcfce7; stroke: #15803d; }
+      .fail { fill: #fee2e2; stroke: #b91c1c; }
+      .text { font: 700 17px Arial, sans-serif; fill: #111827; }
+      .small { font: 400 14px Arial, sans-serif; fill: #334155; }
+      .line { stroke: #1f2937; stroke-width: 2.2; fill: none; marker-end: url(#arrow); }
+      .dash { stroke-dasharray: 7 6; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1100" height="900"/>
+  <text class="title" x="55" y="60">Simple Payment Flow</text>
+
+  <rect class="box api" x="80" y="110" width="220" height="80"/>
+  <text class="text" x="115" y="143">Payment Initiate</text>
+  <text class="small" x="115" y="167">POST /v1/payments</text>
+
+  <rect class="box api" x="390" y="110" width="230" height="80"/>
+  <text class="text" x="430" y="143">PaymentService</text>
+  <text class="small" x="430" y="167">create payment = CREATED</text>
+
+  <rect class="box adapter" x="710" y="110" width="250" height="80"/>
+  <text class="text" x="755" y="143">Adapter</text>
+  <text class="small" x="755" y="167">CARD / UPI / NETBANKING</text>
+
+  <path class="line" d="M300 150 H390"/>
+  <path class="line" d="M620 150 H710"/>
+
+  <rect class="box adapter" x="80" y="265" width="220" height="105"/>
+  <text class="text" x="125" y="298">CARD</text>
+  <text class="small" x="112" y="323">token goes to Vault</text>
+  <text class="small" x="112" y="346">Vault decrypts PAN</text>
+
+  <rect class="box adapter" x="390" y="265" width="230" height="105"/>
+  <text class="text" x="470" y="298">UPI</text>
+  <text class="small" x="430" y="323">build UPI request</text>
+
+  <rect class="box adapter" x="710" y="265" width="250" height="105"/>
+  <text class="text" x="775" y="298">NETBANKING</text>
+  <text class="small" x="755" y="323">build bank request</text>
+
+  <path class="line" d="M835 190 C835 230 190 230 190 265"/>
+  <path class="line" d="M835 190 C835 230 505 230 505 265"/>
+  <path class="line" d="M835 190 V265"/>
+
+  <rect class="box processor" x="390" y="450" width="230" height="85"/>
+  <text class="text" x="443" y="483">Processor</text>
+  <text class="small" x="430" y="507">returns Pending / Failure</text>
+
+  <path class="line" d="M190 370 C190 410 505 410 505 450"/>
+  <path class="line" d="M505 370 V450"/>
+  <path class="line" d="M835 370 C835 410 505 410 505 450"/>
+
+  <rect class="box event" x="80" y="610" width="220" height="90"/>
+  <text class="text" x="120" y="643">Pending</text>
+  <text class="small" x="110" y="667">AUTHORIZE_ATTEMPT</text>
+  <text class="small" x="110" y="688">status = AUTHORIZING</text>
+
+  <rect class="box fail" x="710" y="610" width="250" height="90"/>
+  <text class="text" x="765" y="643">Failure</text>
+  <text class="small" x="750" y="667">AUTHORIZE_FAIL</text>
+  <text class="small" x="750" y="688">status = FAILED</text>
+
+  <path class="line" d="M505 535 C505 575 190 575 190 610"/>
+  <path class="line" d="M505 535 C505 575 835 575 835 610"/>
+
+  <rect class="box event" x="390" y="610" width="230" height="90"/>
+  <text class="text" x="420" y="643">Scheduler Callback</text>
+  <text class="small" x="430" y="667">fake bank response</text>
+  <text class="small" x="430" y="688">approve or decline</text>
+
+  <path class="line dash" d="M300 655 H390"/>
+
+  <rect class="box success" x="80" y="775" width="220" height="85"/>
+  <text class="text" x="120" y="808">Approved</text>
+  <text class="small" x="112" y="832">status = AUTHORIZED</text>
+
+  <rect class="box event" x="390" y="775" width="230" height="85"/>
+  <text class="text" x="435" y="808">Auto Capture</text>
+  <text class="small" x="430" y="832">status = CAPTURING</text>
+
+  <rect class="box success" x="710" y="775" width="250" height="85"/>
+  <text class="text" x="765" y="808">Captured</text>
+  <text class="small" x="750" y="832">status = CAPTURED</text>
+  <text class="small" x="750" y="852">order = PAID</text>
+
+  <path class="line" d="M505 700 C505 740 190 740 190 775"/>
+  <path class="line" d="M300 817 H390"/>
+  <path class="line" d="M620 817 H710"/>
+
+  <path class="line" d="M505 700 C505 735 835 735 835 775"/>
+  <text class="small" x="720" y="745">if declined: FAILED</text>
+</svg>
